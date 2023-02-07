@@ -29,10 +29,10 @@
 		$.when(pt, obv, allgint).fail(onError);
 		$.when(pt, obv, allgint).fail(onError);
 
-        $.when(pt, obv, allgint).done(function(patient, obv, allergies) {
+        $.when(pt, obv, allgint).done(function(patient, obv, allgint) {
 		  console.log(patient);
 		  console.log(obv);
-		  console.log(allergies)
+		  console.log(allgint)
           var byCodes = smart.byCodes(obv, 'code');
           var gender = patient.gender;
 
@@ -40,7 +40,7 @@
           var lname = '';
 
           if (typeof patient.name[0] !== 'undefined') {
-            fname = patient.name[0].given.join(' ');
+            fname = patient.name[0].given.join(' ');	
             lname = patient.name[0].family;
           }
 
