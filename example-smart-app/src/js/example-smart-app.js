@@ -17,10 +17,17 @@
 						"code": 'http://loinc.org|8302-2,http://loinc.org|2085-9,http://loinc.org|2089-1,http://loinc.org|85354-9'
                     }
                   });
+		
+		var allgint = smart.patient.api.fetchAll({
+					"type": 'AllergyIntolerance'
+					"query": {
+						"clinical-status": 'active'
+					}
+				  });
 
-        $.when(pt, obv).fail(onError);
+        $.when(pt, obv, algint).fail(onError);
 
-        $.when(pt, obv).done(function(patient, obv) {
+        $.when(pt, obv, algint).done(function(patient, obv, algint) {
           var byCodes = smart.byCodes(obv, 'code');
           var gender = patient.gender;
 
@@ -37,8 +44,24 @@
           var diastolicbp = getBloodPressureValue(byCodes('85354-9'),'8462-4');
           var hdl = byCodes('2085-9');
           var ldl = byCodes('2089-1');
+		  var allergyTable = "<table>";
+		  var allergyLen = allergies.length;
+		  for (var i=0;i<allergyLen;i++){
+		  	  var reactionStr = [];
+			  if (allergies[i].reaction !== undefined) {
+				  for(var j=0,jLen=allergies[i].reaction.length;j<jLen;j++) {
+					reactionStr.push(allergies[i].reaction[j].manifestation[0].text);
+				  }
+			  }
+			  allergyTable += "<tr><td>"+allergies[i].code.text+"</td><td>"+reactionStr.join(", "
+			  )+"</td></tr>";z
+		  }
+		  if (allergyLen === 0) {
+			  allergyTable += "<tr><td>No Allergies Found</td></tr>";
+		  }
+		  allergyTable += "</table>";
 
-          var p = defaultPatient();
+		  p.allergies = allergyTable;
           p.birthdate = patient.birthDate;
           p.gender = gender;
           p.fname = fname;
