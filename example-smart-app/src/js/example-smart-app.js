@@ -17,10 +17,22 @@
 						"code": 'http://loinc.org|8302-2,http://loinc.org|2085-9,http://loinc.org|2089-1,http://loinc.org|85354-9'
                     }
                   });
+				  
+		var allgint = smart.patient.api.fetchAll({
+					"type": 'AllergyIntolerance',
+					"query": {
+						"clinical-status": 'active'
+					}
+				  });
 
-        $.when(pt, obv).fail(onError);
+        $.when(pt, obv, allgint).fail(onError);
+		$.when(pt, obv, allgint).fail(onError);
+		$.when(pt, obv, allgint).fail(onError);
 
-        $.when(pt, obv).done(function(patient, obv) {
+        $.when(pt, obv, allgint).done(function(patient, obv, allergies) {
+		  console.log(patient);
+		  console.log(obv);
+		  console.log(allergies)
           var byCodes = smart.byCodes(obv, 'code');
           var gender = patient.gender;
 
